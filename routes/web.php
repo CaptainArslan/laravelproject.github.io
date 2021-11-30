@@ -20,4 +20,6 @@ Route::get('/', function () {
 
 Route::get('/', [UserController::class, 'db_data'] );
 
-Route::post('/index', [UserController::class, 'insert_data'] );
+Route::post('/student', [UserController::class, 'insert_data'] );
+
+Route::get('/delete_user/{id}', [UserController::class, 'delete_Data'] );
