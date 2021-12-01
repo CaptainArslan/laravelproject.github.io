@@ -55,7 +55,7 @@ $(document).ready(function(){
 </head>
 <body>
 @if (\Session::has('success'))
-	<div class="container mt-3">
+	<div class="container mt-3 message">
 		<div class="alert alert-success alert-dismissible fade show" role="alert">
 			<strong>{!! \Session::get('success') !!} </strong>
 		</div>
@@ -63,7 +63,7 @@ $(document).ready(function(){
 @endif
 
 @if(\Session::has('fail'))
-	<div class="container mt-3">
+	<div class="container mt-3 message">
 		<div class="alert alert-danger alert-dismissible fade show" role="alert">
 		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
 			<strong>{!! \Session::get('fail') !!} </strong>
@@ -103,9 +103,8 @@ $(document).ready(function(){
 				</thead>
 				<tbody>
 					@if($user > 0)
-					$sr = 1;
+						@php $sr = 1;@endphp
 						@foreach($user as $db_users)
-						
 						<tr>
 							<td>
 								<span class="custom-checkbox">
@@ -113,16 +112,18 @@ $(document).ready(function(){
 									<label for="checkbox1"></label>
 								</span>
 							</td>
-							<td>{{$db_users->id}}</td>
+							<td>{{$sr}}</td>
+							<!-- <td>{{$db_users->id}}</td> -->
 							<td>{{$db_users->user_firstname}}</td>
 							<td>{{$db_users->user_email}}</td>
 							<td>{{$db_users->user_address}}</td>
 							<td>{{$db_users->user_phone}}</td>
 							<td>
-								<a href="{{$db_users->id}}" class="edit_user" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+								<a class="edit_user" id="{{$db_users->id}}" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 								<a href="/delete_user/{{$db_users->id}}" class="delete" onclick="return confirm('* Are you sure to delete this record ?'); " ><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 							</td>
 						</tr>
+						@php $sr++; @endphp
 						@endforeach
 					@else
 						<tr>
@@ -183,72 +184,72 @@ $(document).ready(function(){
 					<h4 class="modal-title">Add Employee</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
-				<input type="hidden" name="id" id="id" class="form-control" >
+					<input type="hidden" name="id" id="id" class="form-control" value="" >
 				<div class="modal-body">					
 					<div class="form-group">
 						<label>Name</label>
-						<input type="text" name="username" id="username" class="form-control" value="{{old('username')}}" >
+						<input type="text" name="username" id="username" class="form-control" value="">
 						<span id="nameErr">@error('username'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Email</label>
-						<input type="text" name="useremail" id="useremail" class="form-control" value="{{old('useremail')}}" >
+						<input type="text" name="useremail" id="useremail" class="form-control" >
 						<span id="emailErr">@error('useremail'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Address</label>
-						<input type="text" class="form-control" name="useraddress" id="useraddress" value="{{old('useraddress')}}" >
+						<input type="text" class="form-control" name="useraddress" id="useraddress" >
 						<span id="addressErr">@error('useraddress'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Phone</label>
-						<input type="text" name="userphone" id="userphone"  class="form-control" value="{{old('userphone')}}" >
+						<input type="text" name="userphone" id="userphone"  class="form-control">
 						<span id="phoneErr">@error('userphone'){{$message}}@enderror</span>
 					</div>					
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-light" data-dismiss="modal" value="Cancel">
-					<input type="submit" class="btn btn-success" name="submit" id="submit" value="Add">
+					<input type="submit" class="btn btn-success" name="submit" id="submit" value="Save">
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<script>
-	//Jquery Method to get the data of the row form the table
-	$(document).ready(function () 
-	{
-		$('.edit_user').click(function ()
-		{ 
-			var id = $(this).data("id");
-			console.log(id);
-			// $tr = $(this).closest('tr');
 
-			// var data = $tr.children("td").map(function() {
-			// 	return $(this).text();
-			// }).get();
 
-			// // console.log(data);
-			// var id = $('#id').val(data[1]);
-			// console.log(id);
-			// $('#username').val(data[2]);
-			// $('#useremail').val(data[3]);
-			// $('#useraddress').val(data[4]);
-			// $('#userphone').val(data[5]);
+<script>	
+	$(".message").show("slow").delay(1000).fadeOut();
+
+	//Add User
+	$(document).ready(function() {
+		$('#add_user').click(function() {
+			$('#addEmployeeModal').modal('show');
+			$('.modal-title').html('Add Employee');
+			$('#submit').val('Save');
+
 		});
 	});
 
-	// //Delete Single user
-	// $(document).ready(function() {
-	// 	$('.delete').click(function() {
-	// 		if(confirm('* Are you sure to delete this record ?')){
-	// 			return true;
-	// 		}else{
-	// 			return false;
-	// 		}
-	// 	});
-	// });
+	//Jquery Method to get the data of the row form the table
+	$(document).ready(function() {
+		$('.edit_user').click(function() {
+			var id = $(this).attr('id');
+			$('#id').val(id);
 
+			$.ajax({
+				type: "GET",
+				url: "/get_student/"+id,
+				success: function (response) 
+				{
+					response = JSON.parse(response);
+					$('#username').val(response[0].user_firstname);
+					$('#useremail').val(response[0].user_email);
+					$('#useraddress').val(response[0].user_address);
+					$('#userphone').val(response[0].user_phone);
+				}
+			});
+		});
+	});
 </script>
 <!-- <script src="{{asset('bootstrap/js/bootstrap.min.js')}}"></script> -->
 <script src="{{asset('js/jqueryformvaldator.js')}}"></script>
