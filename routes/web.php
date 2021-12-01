@@ -23,3 +23,5 @@ Route::get('/', [UserController::class, 'db_data'] );
 Route::post('/student', [UserController::class, 'insert_data'] );
 
 Route::get('/delete_user/{id}', [UserController::class, 'delete_Data'] );
+
+Route::get('/get_student/{id}', [UserController::class, 'get_student'] );
