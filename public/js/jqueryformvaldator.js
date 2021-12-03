@@ -11,11 +11,8 @@ $(document).ready(function() {
         $('#phoneErr').html("");
         $('#addressErr').html("");
         $(this).find('form').trigger('reset');
-
     })
 });
-
-
 
 //Edit User
 $(document).ready(function() {
@@ -24,6 +21,8 @@ $(document).ready(function() {
         $('#submit').val('Update');
         $('#addEmployeeModal').modal('show');
     });
+
+    //Form Validation on Form submission
     $('#submit').click(function() {
         var nameErr = emailErr = phoneErr = addressErr = true;
         var nameval = $('#username').val();
@@ -111,33 +110,5 @@ $(document).ready(function() {
             // return false;
 
         }
-    });
-});
-
-
-//Delete Multiple user
-$(document).ready(function() {
-    $('#delete_multiple_user').click(function() {
-        if ($('input[type=checkbox]:checked').length > 0) {
-            // $('#deleteEmployeeModal').modal('show');
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this imaginary file!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        swal("Poof! Your file has been deleted Successfully !", { icon: "success", });
-                    } else {
-                        swal("Your imaginary file is safe!");
-                    }
-                });
-        } else {
-            swal("* Please Select record to delete!");
-            return false;
-        }
-
     });
 });
