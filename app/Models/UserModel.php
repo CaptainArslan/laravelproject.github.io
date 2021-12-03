@@ -22,9 +22,7 @@ class UserModel extends Model
             return $users;
         }
     }
-
-
-
+// Function to update record from database
     function db_update ($request)
     {
         $duplicate = DB::select("SELECT user_email FROM `tbl_userdata` WHERE `user_email` = '$request->useremail' AND   `id` != '$request->id' ");
@@ -54,7 +52,7 @@ class UserModel extends Model
         // var_dump($request->id);
         // exit;
     }
-
+// Function to insert data into the database
     function db_insert($request)
     {
         $duplicate = DB::select("SELECT user_email FROM `tbl_userdata` WHERE `user_email` = '$request->useremail' ");
@@ -81,7 +79,7 @@ class UserModel extends Model
             }
 
     }
-
+// Function tp delete only one record
     function db_delete($id){
         $delete = DB::delete("DELETE FROM `tbl_userdata` WHERE `id` = '$id' ");
         if($delete)
@@ -90,6 +88,33 @@ class UserModel extends Model
         }
         else
         {
+            return false;
+        }
+    }
+// Function to dlete Multiple Records
+    function db_delete_multiple($ids){
+        DB::beginTransaction();
+        $user_id = true;
+        foreach($ids as $user){
+            //  echo "  ".$user;
+            //  echo "<pre>";
+
+            $delete = DB::delete("DELETE FROM `tbl_userdata` WHERE `id` = '$user' ");
+            if(!$delete){
+                $user_id = false;
+                break;
+            }
+        }
+        if($user_id == true)
+        { 
+            DB::commit();
+            // echo "* Data Committed!";
+            return true;
+        }
+        else
+        {
+            DB::rollBack();
+            // echo "* Data Rolled back!";
             return false;
         }
     }
