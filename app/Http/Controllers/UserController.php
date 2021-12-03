@@ -18,7 +18,7 @@ class UserController extends Controller
     }
     
     
-    public function insert_data(Request $request)
+    public function db_insert_update_data(Request $request)
     {
         // rules for all the input types
 
@@ -28,30 +28,55 @@ class UserController extends Controller
             'useraddress' => 'required|string|min:3|max:255',
 			'userphone' => 'required|string|digits:11|max:255'
         ]);
+        
 
-        //To check the value of the submit button is save or update
+        //To check the value of the submit button is save or update on the basis of input submit "name='submit'"
         // echo $request -> submit;
         // exit;
+        // return $request->input();
 
-
-        //  return $request->input();
         if($validator)
         {
-            $obj = new UserModel();
-            $insert = $obj->db_insert($request);
-
-            if(!$insert){
-                return redirect()->back()->with('fail', 'Error Occured while insertion'); 
-            }else{
-                return redirect()->back()->with('success', 'Data Added Successfully in database'); 
+            if($request -> submit == "Save")
+            {
+                $obj = new UserModel();
+                $insert = $obj->db_insert($request);
+                if($insert == 1)
+                {
+                    return redirect()->back()->with('fail', '* Email Already Exist'); 
+                }else if($insert == 2 )
+                {
+                    return redirect()->back()->with('fail', '* Error Occured while data insertion!');
+                }
+                else 
+                {
+                    return redirect()->back()->with('success', '* Data Inserted Successfully in database'); 
+                }
             }
-        }
-        else
-        {
-
+            else
+            {
+                $obj = new UserModel();
+                $update = $obj->db_update($request);
+                if($update == 1)
+                {
+                    return redirect()->back()->with('fail', '* Email Already Exist in database');
+                }
+                else if($update == 2 )
+                {
+                    return redirect()->back();
+                }
+                else
+                {
+                    return redirect()->back()->with('success', '* Data Updated Successfully in database');
+                }
+            }
         }
     }
 
+    public function update_data(){
+        echo "Hello Wrold";
+        exit;
+    }
 
     public function delete_Data($id){
         $obj = new UserModel();
@@ -64,13 +89,26 @@ class UserController extends Controller
     }
 
     public function get_student($id){
-        //To the chek the id of the student to check
+        //To the check the id of the student to check
         // echo $id;
         // exit;
         $obj = new UserModel();
-        $get_user = $obj->get_student_data($id);
-        
+        $get_user = $obj->get_student_data($id); 
         echo json_encode($get_user);
-
     }
+
+
+    public function get_email($email){
+       $obj = new UserModel();
+       $get_email = $obj -> get_email($email);
+       if($get_email)
+        {
+            echo "true";
+        }
+        else
+        {
+            echo "false";
+        }
+    }
+
 }
