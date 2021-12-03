@@ -26,9 +26,6 @@
 
 <script>
 $(document).ready(function(){
-	// Activate tooltip
-	$('[data-toggle="tooltip"]').tooltip();
-	
 	// Select/Deselect checkboxes
 	var checkbox = $('table tbody input[type="checkbox"]');
 	$("#selectAll").click(function(){
@@ -42,6 +39,7 @@ $(document).ready(function(){
 			});
 		} 
 	});
+
 	checkbox.click(function(){
 		if(!this.checked){
 			$("#selectAll").prop("checked", false);
@@ -72,113 +70,90 @@ $(document).ready(function(){
 @endif
 	<div class="container-xl">
 	<div class="table-responsive">
-		<div class="table-wrapper">
-			<div class="table-title">
-				<div class="row">
-					<div class="col-sm-6">
-						<h2>Manage <b>Employees</b></h2>
-					</div>
-					<div class="col-sm-6">
-						<a href="" class="btn btn-success" id="add_user" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
-						<a href="" class="btn btn-danger" id="delete_multiple_user" data-toggle="modal"><i class="material-icons" onclick=" return jqisChecked(); ">&#xE15C;</i> <span>Delete Selected</span></a>						
+		<form action="/delete_multiple" method="POST" onsubmit="return confirm('* Are you sure to Delete these records !')">
+			@csrf
+			<div class="table-wrapper">
+				<div class="table-title">
+					<div class="row">
+						<div class="col-sm-6">
+							<h2>Manage <b>Employees</b></h2>
+						</div>
+						<div class="col-sm-6">
+							<a href="" class="btn btn-success" id="add_user" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
+							<button type="submit" name="delete_selected" class="btn btn-danger" id="delete_multiple_user" data-toggle="modal" ><i class="material-icons" >&#xE15C;</i> <span>Delete Selected</span></button type="submit">						
+						</div>
 					</div>
 				</div>
-			</div>
-			<table class="table table-striped table-hover ">
-				<thead >
-					<tr>
-						<th>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
-							</span>
-						</th>
-						<th>ID</th>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Address</th>
-						<th>Phone</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if($user > 0)
-						@php $sr = 1;@endphp
-						@foreach($user as $db_users)
+				<table class="table table-striped table-hover ">
+					<thead >
 						<tr>
-							<td>
+							<th>
 								<span class="custom-checkbox">
-									<input type="checkbox" id="checkbox1" name="options[]" value="1">
-									<label for="checkbox1"></label>
+									<input type="checkbox" id="selectAll">
+									<label for="selectAll"></label>
 								</span>
-							</td>
-							<td>{{$sr}}</td>
-							<!-- <td>{{$db_users->id}}</td> -->
-							<td>{{$db_users->user_firstname}}</td>
-							<td>{{$db_users->user_email}}</td>
-							<td>{{$db_users->user_address}}</td>
-							<td>{{$db_users->user_phone}}</td>
-							<td>
-								<a class="edit_user" id="{{$db_users->id}}" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-								<a href="/delete_user/{{$db_users->id}}" class="delete" onclick="return confirm('* Are you sure to delete this record ?'); " ><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-							</td>
+							</th>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Address</th>
+							<th>Phone</th>
+							<th>Actions</th>
 						</tr>
-						@php $sr++; @endphp
-						@endforeach
-					@else
-						<tr>
-							<td colspan="7" class="text-center font-weight-bold bg-light">No Record Found </td>
-						</tr>
-					@endif	
-				</tbody>
-			</table>
-			<div class="clearfix">
-				<div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-				<ul class="pagination">
-					<li class="page-item disabled"><a href="#">Previous</a></li>
-					<li class="page-item active"><a href="#" class="page-link">1</a></li>
-					<li class="page-item"><a href="#" class="page-link">2</a></li>
-					<li class="page-item "><a href="#" class="page-link">3</a></li>
-					<li class="page-item"><a href="#" class="page-link">4</a></li>
-					<li class="page-item"><a href="#" class="page-link">5</a></li>
-					<li class="page-item"><a href="#" class="page-link">Next</a></li>
-				</ul>
+					</thead>
+					<tbody>
+						@if($user > 0)
+							@php $sr = 1;@endphp
+							@foreach($user as $db_users)
+							<tr>
+								<td>
+									<span class="custom-checkbox">
+										<input type="checkbox" name="options[]" id="{{$db_users->id}}" value="{{$db_users->id}}">
+										<label for=""></label>
+									</span>
+								</td>
+								<td>{{$sr}}</td>
+								<!-- <td>{{$db_users->id}}</td> -->
+								<td>{{$db_users->user_firstname}}</td>
+								<td>{{$db_users->user_email}}</td>
+								<td>{{$db_users->user_address}}</td>
+								<td>{{$db_users->user_phone}}</td>
+								<td>
+									<a class="edit_user" id="{{$db_users->id}}" ><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+									<a href="/delete_user/{{$db_users->id}}" class="delete" onclick="return confirm('* Are you sure to delete this record ?'); " ><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+								</td>
+							</tr>
+							@php $sr++; @endphp
+							@endforeach
+						@else
+							<tr>
+								<td colspan="7" class="text-center font-weight-bold bg-light">No Record Found </td>
+							</tr>
+						@endif	
+					</tbody>
+				</table>
+				<div class="clearfix">
+					<div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+					<ul class="pagination">
+						<li class="page-item disabled"><a href="#">Previous</a></li>
+						<li class="page-item active"><a href="#" class="page-link">1</a></li>
+						<li class="page-item"><a href="#" class="page-link">2</a></li>
+						<li class="page-item "><a href="#" class="page-link">3</a></li>
+						<li class="page-item"><a href="#" class="page-link">4</a></li>
+						<li class="page-item"><a href="#" class="page-link">5</a></li>
+						<li class="page-item"><a href="#" class="page-link">Next</a></li>
+					</ul>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>        
 </div>
-
-
-<!-- Delete Modal HTML -->
-<div id="deleteEmployeeModal" class="modal fade" >
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form>
-				<div class="modal-header">						
-					<h4 class="modal-title">Delete Employee</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">					
-					<p>Are you sure you want to delete these Records?</p>
-					<p class="text-warning"><small>This action cannot be undone.</small></p>
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<!-- <input type="submit" class="btn btn-danger" value="Delete"> -->
-					<button  data-teacherid='' class="btn btn-danger">Delete</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-
 
 <!-- Edit Modal HTML -->
 <div id="addEmployeeModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="/student" method="POST" name="form" id="form" >
+			<form action="/student" method="POST" name="form" id="form" onsubmit="return confirm('Are you sure to save this record')">
 			@csrf
 				<div class="modal-header">						
 					<h4 class="modal-title">Add Employee</h4>
@@ -252,14 +227,14 @@ $(document).ready(function(){
 				}
 			});
 		});
-// Email Duplication bu ajax 
+		// Email Duplication bu ajax 
 		$('#useremail').blur(function()
             {
                 var email = $('#useremail').val();
                 var email_hidden_check = $('#useremail_hidden').val();
                 //to check the values of the variables
-                console.log(email_hidden_check);
-                console.log(email);
+                // console.log(email_hidden_check);
+                // console.log(email);
                 if(email != email_hidden_check)
                 {
                     $.ajax({
@@ -282,29 +257,12 @@ $(document).ready(function(){
                 }
             });
 
-		//Delete Multiple user Check
-		$('#delete_multiple_user').click(function() {
-        if ($('input[type=checkbox]:checked').length > 0) {
-            // $('#deleteEmployeeModal').modal('show');
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this imaginary file!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        swal("Poof! Your file has been deleted Successfully !", { icon: "success", });
-                    } else {
-                        swal("Your imaginary file is safe!");
-                    }
-                });
-        } else {
+	//Delete Multiple user Check
+	$('#delete_multiple_user').click(function() {
+        if ($('input[type=checkbox]:checked').length == 0) {
             swal("* Please Select record to delete!");
             return false;
         }
-
     });
 
 
