@@ -194,6 +194,7 @@ $(document).ready(function(){
 					<div class="form-group">
 						<label>Email</label>
 						<input type="text" name="useremail" id="useremail" class="form-control" >
+						<input type="hidden" name="useremail_hidden" id="useremail_hidden" class="form-control" >
 						<span id="emailErr">@error('useremail'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
@@ -218,7 +219,7 @@ $(document).ready(function(){
 
 
 <script>	
-	$(".message").show("slow").delay(1000).fadeOut();
+	$(".message").show("slow").delay(3000).fadeOut();
 
 	//Add User
 	$(document).ready(function() {
@@ -242,13 +243,72 @@ $(document).ready(function(){
 				success: function (response) 
 				{
 					response = JSON.parse(response);
+					$('#id').val(response[0].id);
 					$('#username').val(response[0].user_firstname);
 					$('#useremail').val(response[0].user_email);
+					$('#useremail_hidden').val(response[0].user_email);
 					$('#useraddress').val(response[0].user_address);
 					$('#userphone').val(response[0].user_phone);
 				}
 			});
 		});
+// Email Duplication bu ajax 
+		$('#useremail').blur(function()
+            {
+                var email = $('#useremail').val();
+                var email_hidden_check = $('#useremail_hidden').val();
+                //to check the values of the variables
+                console.log(email_hidden_check);
+                console.log(email);
+                if(email != email_hidden_check)
+                {
+                    $.ajax({
+						type: "GET",
+						url: "/get_emails/"+email,
+						success: function (response) {
+							console.log(response);
+							if(response ==  "true" )
+							{
+								$('#emailErr').html("* Email Already Registered!");
+                                $('#submit').attr('disabled', true);
+							}
+							else
+							{
+								$('#emailErr').html("");
+                                $('#submit').attr('disabled',false);
+							}
+						}
+					});
+                }
+            });
+
+		//Delete Multiple user Check
+		$('#delete_multiple_user').click(function() {
+        if ($('input[type=checkbox]:checked').length > 0) {
+            // $('#deleteEmployeeModal').modal('show');
+            swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Your file has been deleted Successfully !", { icon: "success", });
+                    } else {
+                        swal("Your imaginary file is safe!");
+                    }
+                });
+        } else {
+            swal("* Please Select record to delete!");
+            return false;
+        }
+
+    });
+
+
+
 	});
 </script>
 <!-- <script src="{{asset('bootstrap/js/bootstrap.min.js')}}"></script> -->
