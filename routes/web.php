@@ -14,14 +14,12 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
-
 Route::get('/', [UserController::class, 'db_data'] );
-
-Route::post('/student', [UserController::class, 'insert_data'] );
-
+Route::post('/student', [UserController::class, 'db_insert_update_data'] );
 Route::get('/delete_user/{id}', [UserController::class, 'delete_Data'] );
 
+
+//Ajax Call to get user in modal in index.blade.php
 Route::get('/get_student/{id}', [UserController::class, 'get_student'] );
+//Ajax Call to check user Email in modal in index.blade.php to show dupkication
+Route::get('/get_emails/{email}', [UserController::class, 'get_email'] );
