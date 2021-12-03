@@ -111,4 +111,20 @@ class UserController extends Controller
         }
     }
 
+    function get_delete_ids(Request $request){
+        //To check that what values are posting in the form
+        // return $request->input();
+        $ids = $request->options;
+        $obj = new UserModel();
+        $delete_multiple =  $obj-> db_delete_multiple($ids);
+        if($delete_multiple == true)
+        {
+            return redirect()->back()->with('success', '* Data Deleted Successfully from database');
+        }
+        else
+        {
+            return redirect()->back()->with('fail', 'Error While Deletion from database');
+        }
+    }
+
 }
