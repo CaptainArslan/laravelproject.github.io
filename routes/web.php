@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 Route::get('/', [UserController::class, 'db_data'] );
 Route::post('/student', [UserController::class, 'db_insert_update_data'] );
 Route::get('/delete_user/{id}', [UserController::class, 'delete_Data'] );
+Route::post('/delete_multiple',[UserController::class, 'get_delete_ids']);
 
 
 //Ajax Call to get user in modal in index.blade.php
