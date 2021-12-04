@@ -35,6 +35,7 @@ class UserModel extends Model
             $update = DB::table('tbl_userdata') ->where('id', $request->id)
             ->limit(1)
             ->update([
+                'user_image' =>  $request->userimage,
                 'user_firstname' => $request->username,
                 'user_email' => $request->useremail,
                 'user_address' => $request->useraddress,
@@ -64,6 +65,7 @@ class UserModel extends Model
             else
             {
                 $insert = DB::table('tbl_userdata')->insert([
+                    'user_image' =>  $request->userimage,
                     'user_firstname' => $request->username,
                     'user_email' => $request->useremail,
                     'user_address' => $request->useraddress,
