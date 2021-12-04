@@ -9,17 +9,21 @@
 <link rel="stylesheet" href="{{asset('css/style.css')}}">
 <link rel="stylesheet" href="{{asset('css/all.min.css')}}">
 <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+<link rel="stylesheet" href="{{asset('css/fontawsome.css')}}">
 
+<script src="{{asset('js/jquery-3.5.1.min.js')}}"></script>
+<script src="{{asset('js/sweetalert.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<script src="{{asset('js/popper.min.js')}}"></script>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<!-- Data table Plugins
+<link rel="stylesheet" href="{{asset('css/dataTables.min.css')}}">
+<script src="{{asset('js/dataTables.min.js')}}"></script> -->
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
 
 
 
@@ -47,6 +51,11 @@ $(document).ready(function(){
 	});
 });
 
+// // Jquery datatable plugin
+// $(document).ready( function () {
+//     $('#myTable').DataTable();
+// } );
+
 </script>
 
 
@@ -68,6 +77,7 @@ $(document).ready(function(){
 		</div>
 	</div>
 @endif
+
 	<div class="container-xl">
 	<div class="table-responsive">
 		<form action="/delete_multiple" method="POST" onsubmit="return confirm('* Are you sure to Delete these records !')">
@@ -84,7 +94,7 @@ $(document).ready(function(){
 						</div>
 					</div>
 				</div>
-				<table class="table table-striped table-hover ">
+				<table class="table table-striped table-hover " id="myTable">
 					<thead >
 						<tr>
 							<th>
@@ -94,6 +104,7 @@ $(document).ready(function(){
 								</span>
 							</th>
 							<th>ID</th>
+							<th>Image</th>
 							<th>Name</th>
 							<th>Email</th>
 							<th>Address</th>
@@ -113,6 +124,7 @@ $(document).ready(function(){
 									</span>
 								</td>
 								<td>{{$sr}}</td>
+								<td><img src="{{asset('images')}}/{{$db_users->user_image}}" alt="{{$db_users->user_image}}"></td>
 								<!-- <td>{{$db_users->id}}</td> -->
 								<td>{{$db_users->user_firstname}}</td>
 								<td>{{$db_users->user_email}}</td>
@@ -127,7 +139,7 @@ $(document).ready(function(){
 							@endforeach
 						@else
 							<tr>
-								<td colspan="7" class="text-center font-weight-bold bg-light">No Record Found </td>
+								<td colspan="8" class="text-center font-weight-bold bg-light">No Record Found </td>
 							</tr>
 						@endif	
 					</tbody>
@@ -153,35 +165,41 @@ $(document).ready(function(){
 <div id="addEmployeeModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="/student" method="POST" name="form" id="form" onsubmit="return confirm('Are you sure to save this record')">
+			<form action="/student" method="POST" name="form" id="form" enctype="multipart/form-data" onsubmit="return confirm('Are you sure to save this record')">
 			@csrf
 				<div class="modal-header">						
 					<h4 class="modal-title">Add Employee</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 					<input type="hidden" name="id" id="id" class="form-control" value="" >
-				<div class="modal-body">					
+				<div class="modal-body">	
+					<div class="form-group">
+						<label>User Image</label>
+						<input type="file" name="userimage" id="userimage"  class="form-control" autocomplete="off" placeholder="Optional">
+						<span id="userimage">@error('userimage'){{$message}}@enderror</span>
+					</div>				
 					<div class="form-group">
 						<label>Name</label>
-						<input type="text" name="username" id="username" class="form-control" value="">
+						<input type="text" name="username" id="username" class="form-control" value="" autocomplete="off">
 						<span id="nameErr">@error('username'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Email</label>
-						<input type="text" name="useremail" id="useremail" class="form-control" >
+						<input type="text" name="useremail" id="useremail" class="form-control" autocomplete="off">
 						<input type="hidden" name="useremail_hidden" id="useremail_hidden" class="form-control" >
 						<span id="emailErr">@error('useremail'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Address</label>
-						<input type="text" class="form-control" name="useraddress" id="useraddress" >
+						<input type="text" class="form-control" name="useraddress" id="useraddress" autocomplete="off" >
 						<span id="addressErr">@error('useraddress'){{$message}}@enderror</span>
 					</div>
 					<div class="form-group">
 						<label>Phone</label>
-						<input type="text" name="userphone" id="userphone"  class="form-control">
+						<input type="text" name="userphone" id="userphone"  class="form-control" autocomplete="off">
 						<span id="phoneErr">@error('userphone'){{$message}}@enderror</span>
-					</div>					
+					</div>		
+									
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-light" data-dismiss="modal" value="Cancel">
@@ -224,6 +242,9 @@ $(document).ready(function(){
 					$('#useremail_hidden').val(response[0].user_email);
 					$('#useraddress').val(response[0].user_address);
 					$('#userphone').val(response[0].user_phone);
+					$('#userimage').text(response[0].user_image);
+					// console.log(response[0].user_image);
+
 				}
 			});
 		});
