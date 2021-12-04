@@ -23,12 +23,16 @@ class UserController extends Controller
         // rules for all the input types
 
         $validator = $request->validate([
+            'userimage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'username' => 'required|string|min:3|max:255',
 			'useremail' => 'required|email|min:3|max:255',
             'useraddress' => 'required|string|min:3|max:255',
 			'userphone' => 'required|string|digits:11|max:255'
         ]);
         
+        
+        // echo $imageName;
+        // exit;
 
         //To check the value of the submit button is save or update on the basis of input submit "name='submit'"
         // echo $request -> submit;
@@ -39,6 +43,16 @@ class UserController extends Controller
         {
             if($request -> submit == "Save")
             {
+                $userimage = $request->userimage;
+                if($userimage != ""){
+                    $imageName = time().'.'.$request->userimage->extension(); 
+                    $request->userimage->move(public_path('images'), $imageName);
+                }else{
+                    $imageName = " ";
+                }
+                 
+                $request->userimage = $imageName;
+                
                 $obj = new UserModel();
                 $insert = $obj->db_insert($request);
                 if($insert == 1)
@@ -55,28 +69,33 @@ class UserController extends Controller
             }
             else
             {
+                $userimage = $request->userimage;
+                if($userimage != ""){
+                    $imageName = time().'.'.$request->userimage->extension(); 
+                    $request->userimage->move(public_path('images'), $imageName);
+                }else{
+                    $imageName = " ";
+                }
+                 
+                $request->userimage = $imageName;
                 $obj = new UserModel();
                 $update = $obj->db_update($request);
                 if($update == 1)
                 {
-                    return redirect()->back()->with('fail', '* Email Already Exist in database');
+                    return redirect()->back()->with('fail', '* Email Already Exist in database !');
                 }
                 else if($update == 2 )
                 {
-                    return redirect()->back();
+                    return redirect()->back()->with('success', '* Data Updated Successfully !');
                 }
                 else
                 {
-                    return redirect()->back()->with('success', '* Data Updated Successfully in database');
+                    return redirect()->back()->with('success', '* Data Updated Successfully in database !');
                 }
             }
         }
     }
 
-    public function update_data(){
-        echo "Hello Wrold";
-        exit;
-    }
 
     public function delete_Data($id){
         $obj = new UserModel();
